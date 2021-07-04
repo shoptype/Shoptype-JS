@@ -422,17 +422,6 @@
   border-color: #000 #000 #6d6b5d;
 }
 
-.st-cart-iframe {
-  position: relative;
-  z-index: 1;
-  width: 348px;
-  height: 100%;
-  border-top: 1px solid #e2dfd4;
-  border-bottom: 1px solid #e2dfd4;
-  border-left: 1px solid #e2dfd4;
-  background-color: #f2efe4;
-}
-
 .st-cart-store-name {
   margin-top: 0px;
   margin-bottom: 0px;
@@ -1340,10 +1329,6 @@
 @media screen and (max-width: 767px) {
   .st-cart-close-button {
     position: relative;
-    z-index: 999;
-  }
-
-  .st-cart-iframe {
     z-index: 999;
   }
 

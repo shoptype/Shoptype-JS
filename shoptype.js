@@ -118,6 +118,8 @@ const currentUrl = new URL(window.location);
 const st_backend = "https://backend.shoptype.com";
 const stLoginEvent = new Event('userLogin');
 const stShoptypeInit = new Event('shoptypeInit');
+const shoptypeCartClosed = new Event('shoptypeCartClosed');
+const shoptypeCartOpened = new Event('shoptypeCartOpened');
 const stCurrency = {"USD":"$", "INR":"₹","GBP":"£"};
 const cssUrl = "https://in.awake.market/wp-content/themes/marketo/assets/css/shoptype-2.0.css?1";
 const stLoadedProducts = {};
@@ -576,11 +578,13 @@ function removeClass(element, className){
 function openCart(){
 	cartMainFrame.style.display = "";
 	cartMainFrame.style.right= "0px";
+	document.dispatchEvent(shoptypeCartOpened);
 	moveToCart()
 }
 function closeCart(){
 	checkout = null;
 	cartMainFrame.style.right= "-400px";
+	document.dispatchEvent(shoptypeCartClosed);
 }
 function changeState(stateProg){
 	state+=stateProg;
@@ -619,6 +623,7 @@ function moveToCart(){
 	document.getElementById("st-all-carts-shipping").innerHTML = "Address Required";
 }
 function moveToDelivery(){
+	state = 1;
 	getDeviceId().
 		then(deviceId=>{
 		headerOptions.method = 'post';
@@ -660,6 +665,7 @@ function moveToDelivery(){
 				}else{
 					cartMainFrame.style.display = "";
 					cartMainFrame.style.right= "0px";
+					document.dispatchEvent(shoptypeCartOpened);
 					document.getElementById("st-cart-list").style.display = "none";
 					document.getElementById("st-cart-deliver").style.display = "flex";
 					document.getElementById("st-state-del").className = "st-state-selected";
@@ -675,6 +681,7 @@ function moveToDelivery(){
 		});
 }
 function moveToPayments(){
+	state = 2;
 	headerOptions.method = "put";
 	let countrySelect = document.getElementById("st-country");
 	let stateSelect = document.getElementById("st-state");
@@ -775,16 +782,19 @@ function updateShipping(shippingKey){
 }
 function moveToPay(){
 	cartMainFrame.style.right= "-400px";
+	document.dispatchEvent(shoptypeCartClosed);
 	initSTPayment(checkout.id, st_backend, headerOptions.headers["X-Shoptype-Api-Key"], paymentComplete)
 }
 function paymentComplete(payload){
 	switch(payload.status){
 	case "failed":
 		cartMainFrame.style.right= "0px";
+		document.dispatchEvent(shoptypeCartOpened);
 		showError(payload.message);
 		break;
 	case "closed":
 		cartMainFrame.style.right= "0px";
+		document.dispatchEvent(shoptypeCartOpened);
 		break;
 	case "success":
 		closeCart();
@@ -829,18 +839,29 @@ function doStuffOnUnload() {
 		});
 }
 function selectCart(cart){
-	cart.querySelector(".selectBtn").checked = true;
-	selectedCartId = cart.id;
-	let curr = cart.getAttribute("currency");
-	let tot = cart.getAttribute("total");
-	let pricePrefix = stCurrency[curr]??curr;
+	let pricePrefix = "";
+	let tot = 0;
+	var itemCount = 0;
+	if(cart){
+		cart.querySelector(".selectBtn").checked = true;
+		selectedCartId = cart.id;
+		let curr = cart.getAttribute("currency");
+		tot = cart.getAttribute("total");
+		pricePrefix = stCurrency[curr]??curr;
+		itemCount = parseInt(cart.getAttribute("items"));
+	}
 	document.getElementById("st-selected-cart-total").innerHTML = pricePrefix + " " + tot;
 	document.getElementById("st-cart-total").innerHTML = pricePrefix + " " + tot;
-	document.getElementById("st-cart-summary-text").innerHTML = "Items ("+cart.getAttribute("items")+"):";
+	document.getElementById("st-cart-summary-text").innerHTML = "Items ("+itemCount+"):";			
+
+	let shoptypeCartCountChanged =new CustomEvent('shoptypeCartCountChanged', {'detail': {
+		"count": itemCount
+	}});
+	document.dispatchEvent(shoptypeCartCountChanged);
 	if(st_cartCountMatch){
 		let countField = document.querySelector(st_cartCountMatch);
 		if(countField){
-			var itemCount = parseInt(cart.getAttribute("items"));
+
 			countField.innerHTML = '<span class="cart-count">'+itemCount+"</span>"
 			if(itemCount>0){
 				countField.classList.remove("hide")
@@ -884,6 +905,7 @@ function refreshCart(cartNode){
 			addCartProducts(cartJson, cartNode);
 			selectCart(cartNode);
 		}else{
+			selectCart(null);
 			cartNode.remove();
 		}
 		});
