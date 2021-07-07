@@ -118,12 +118,11 @@ const currentUrl = new URL(window.location);
 const st_backend = "https://backend.shoptype.com";
 const stLoginEvent = new Event('userLogin');
 const stShoptypeInit = new Event('shoptypeInit');
-const shoptypeCartClosed = new Event('shoptypeCartClosed');
-const shoptypeCartOpened = new Event('shoptypeCartOpened');
 const stCurrency = {"USD":"$", "INR":"₹","GBP":"£"};
-const cssUrl = "https://in.awake.market/wp-content/themes/marketo/assets/css/shoptype-2.0.css?1";
+const cssUrl = "https://in.awake.market/wp-content/themes/marketo/assets/css/shoptype-2.3.css";
 const stLoadedProducts = {};
 const cartUrl = "https://app.shoptype.com/cart";
+const st_defaultCurrency = "USD";
 let currentPageProductId = null;
 let stToken = currentUrl.searchParams.get("token");
 let stCheckoutType = "same";
@@ -183,7 +182,10 @@ function initShoptype(){
 		}
 		let body = document.getElementsByTagName('body')[0];
 		let cartWraper = document.createElement("div");
-		cartWraper.innerHTML = cartIframeHtml;		
+		cartWraper.innerHTML = cartIframeHtml + 
+								st_coseller_profile.replace("{site}", currentUrl.hostname) +
+								cosellMask+
+								st_cosell_screen.replace("{{site}}", currentUrl.host);;		
 		body.insertBefore(cartWraper, body.firstChild);
 		cartMainFrame = document.getElementById("st-cart-iframe-block");
 		headerOptions.headers["X-Shoptype-Api-Key"] = apiKey;
@@ -249,9 +251,10 @@ let loginMask = `<div id="st-login-mask" style="display:none" class="st-login-ma
 let cosellBtn = `<div class="st-cosell"><div id="st-product-cosell-button" class="st-product-cosell-button" onclick="showCosell()">COSELL</div></div><div class="st-cosell-note"><div id="st-cosell-earn1" class="st-cosell-text">NEW! - Earn up to $ 5 every co-sale.<br>Rewarded with real money through attributions.</div></div>`;
 let buyBtnHtml = `<div id="product-buy-button" class="st-product-buy-button" onclick="addToCart(this)">ADD TO CART</div>`;
 let buyNowBtnHtml = `<div id="product-buy-button" class="st-product-buynow-button" onclick="stBuyNow(this)">BUY IT NOW</div>`;
-let cartIframeHtml = `<div id="st-cart-iframe-block" style="display:none" class="st-cart-iframe-block"><div id="st-cart-close-button" class="st-cart-close-button" onclick="closeCart()">X</div><div class="st-cart-iframe"><div><div class="st-cart-state"><div id="st-state-cart" class="st-state-selected"></div><div id="st-state-line-1" class="st-state-line"></div><div id="st-state-del" class="st-state"></div><div id="st-state-line-2" class="st-state-line"></div><div id="st-state-pay" class="st-state"></div></div><div class="st-cart-progress"><div class="st-cart-state-test">Cart</div><div class="st-cart-state-test st-cart-center">Address</div><div class="st-cart-state-test">Pay &amp; Checkout</div></div></div><div><div class="st-cart-summary-title">SUMMARY</div><div class="st-cart-summary"><div><div class="st-cart-items-total"><div id="st-cart-summary-text" class="st-cart-summary-text">Items (0):</div><div id="st-selected-cart-total" class="st-cart-summary-val">0 USD</div></div><div class="st-cart-items-total"><div class="st-cart-summary-text">Shipping:</div><div id="st-all-carts-shipping" class="st-cart-summary-val">Address Required</div></div></div><div class="div-block-115"><div class="st-cart-summmary-tot">Total</div><div id="st-cart-total" class="st-cart-summmary-tot-val">0</div></div></div></div><div id="st-error-message" class="st-error-message">Error:</div><div id="st-cart-list" class="st-cart-list"><div id="st-vendor-cart-000" class="st-vendor-cart" onclick="selectCart(this)"><div class="st-cart-title"><div class="st-cart-radio-btn"><input type="radio" name="cartSelect" class="selectBtn"></div><h4 class="st-cart-store-name">Clubhouse Kim Cart</h4></div><div class="st-cart-products"><div id="st-cart-product-000" class="st-cart-product"><div class="st-cart-title"><div class="st-cart-image"><img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" alt="" class="st-cart-product-image"></div><div class="st-prod-del"><div><div class="st-cart-product-name">product name</div><div class="st-cart-product-brand">-</div></div><div class="st-product-price-quant"><div class="st-cart-prod-price"><div class="st-cart-prod-txt"><strong>Price: </strong></div><div class="st-cart-porduct-price">$00.00</div></div><div class="st-product-quant variant-select-2"><div class="st-product-minus" onclick="updateQuant(this,-1)">-</div><div class="st-cart-product-quant">1</div><div class="st-product-add" onclick="updateQuant(this,1)">+</div></div></div></div><img src="https://uploads-ssl.webflow.com/5fe2e58de64c87443f836b85/602ba124827ca0ca86e8e6a6_trash-can%201.svg" loading="lazy" alt="" class="st-cart-product-delete" onclick="removeProduct(this)"></div></div></div></div></div><div id="st-cart-deliver" class="st-cart-delivery"><div class="st-cart-summary-title">Delivery Details</div><div class="st-cart-delivery-details"><div class="st-cart-block-txt">Personal Deatils</div><div class="st-cart-form"> <input type="text" class="st-cart-input-field w-input" maxlength="256" name="name" data-name="Name" placeholder="Name" id="st-name"><input type="text" class="st-cart-input-field w-input" maxlength="256" name="email" data-name="email" placeholder="Email Address" id="st-email"><input type="text" class="st-cart-input-field w-input" maxlength="256" name="phone" data-name="phone" placeholder="Phone Number (Optional)" id="st-phone"><input type="text" class="st-cart-input-field w-input" maxlength="256" name="address1" data-name="address1" placeholder="Street Address 1" id="st-address"><input type="text" class="st-cart-input-field w-input" maxlength="256" name="address2" data-name="address2" placeholder="Street Address 2 (Optional)" id="st-address-2"><select id="st-country" name="country" data-name="country" class="st-select-field w-select"><option value="">Select a country...</option> </select><select id="st-state" name="state" data-name="state" class="st-select-field w-select"><option value="">Select a state...</option> </select><input type="text" class="st-cart-input-field w-input" maxlength="256" name="city" data-name="city" placeholder="City" id="st-city"><input type="text" class="st-cart-input-field w-input" maxlength="256" name="pincode" data-name="pincode" placeholder="Postal Code" id="st-pincode"></div></div></div><div id="st-cart-payment" class="st-cart-payment"><div id="st-vendor-shipping-000" class="st-vendor-shipping"><div id="shipping-mode" class="st-shipping-options-div"> <label for="name">Shipping Options</label> <select name="field" class="st-shipping-options"><option value="">Select one...</option> </select></div><div class="st-vendor-ship-product"><div class="st-cart-product-name">product name</div><div class="st-cart-product-no">0</div></div></div><div id="vcart-list"></div><div class="div-block-132"><div class="st-delivery-field"><div class="st-field-title">Name:</div><div id="shipping-name" class="st-field-value"></div></div><div class="st-delivery-field"><div class="st-field-title">phone</div><div id="shipping-phone" class="st-field-value"></div></div><div class="st-delivery-field"><div class="st-field-title">Email:</div><div id="shipping-email" class="st-field-value"></div></div><div class="st-delivery-field"><div class="st-field-title">Shipping Address:</div><div id="shipping-address" class="st-field-value"></div></div><div class="st-delivery-field"><div class="st-field-title">Billing Address:</div><div id="billing-address" class="st-field-value"></div></div></div></div><div class="st-cart-nav-bar"><div id="st-cart-back" class="st-cart-back" onclick="changeState(-1)">Back</div><div id="st-cart-next-btn" class="st-cart-next-btn" onclick="changeState(1)">Proceed to Delivery</div></div></div></div>`;
+let cartIframeHtml = `<div id="st-cart-iframe-block" style="display:none" class="st-cart-iframe-block"><div id="st-cart-close-button" class="st-cart-close-button" onclick="closeCart()">X</div><div class="st-cart-iframe"><div><div class="st-cart-state"><div id="st-state-cart" class="st-state-selected"></div><div id="st-state-line-1" class="st-state-line"></div><div id="st-state-del" class="st-state"></div><div id="st-state-line-2" class="st-state-line"></div><div id="st-state-pay" class="st-state"></div></div><div class="st-cart-progress"><div class="st-cart-state-test">Cart</div><div class="st-cart-state-test st-cart-center">Address</div><div class="st-cart-state-test">Pay &amp; Checkout</div></div></div><div><div class="st-cart-summary-title">SUMMARY</div><div class="st-cart-summary"><div><div class="st-cart-items-total"><div id="st-cart-summary-text" class="st-cart-summary-text">Items (0):</div><div id="st-selected-cart-total" class="st-cart-summary-val">0 USD</div></div><div class="st-cart-items-total"><div class="st-cart-summary-text">Shipping:</div><div id="st-all-carts-shipping" class="st-cart-summary-val">Address Required</div></div></div><div class="div-block-115"><div class="st-cart-summmary-tot">Total</div><div id="st-cart-total" class="st-cart-summmary-tot-val">0</div></div></div></div><div id="st-error-message" class="st-error-message">Error:</div><div id="st-cart-list" class="st-cart-list"><div id="st-vendor-cart-000" class="st-vendor-cart" onclick="selectCart(this)"><div class="st-cart-title"><div class="st-cart-radio-btn"><input type="radio" name="cartSelect" class="selectBtn"></div><h4 class="st-cart-store-name">Clubhouse Kim Cart</h4></div><div class="st-cart-products"><div id="st-cart-product-000" class="st-cart-product"><div class="st-cart-title"><div class="st-cart-image"><img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" alt="" class="st-cart-product-image"></div><div class="st-prod-del"><div><div class="st-cart-product-name">product name</div><div class="st-cart-product-brand">-</div></div><div class="st-product-price-quant"><div class="st-cart-prod-price"><div class="st-cart-prod-txt"><strong>Price: </strong></div><div class="st-cart-porduct-price">$00.00</div></div><div class="st-product-quant variant-select-2"><div class="st-product-minus" onclick="updateQuant(this,-1)">-</div><div class="st-cart-product-quant">1</div><div class="st-product-add" onclick="updateQuant(this,1)">+</div></div></div></div><img src="https://uploads-ssl.webflow.com/5fe2e58de64c87443f836b85/602ba124827ca0ca86e8e6a6_trash-can%201.svg" loading="lazy" alt="" class="st-cart-product-delete" onclick="removeProduct(this)"></div></div></div></div></div><div id="st-cart-deliver" class="st-cart-delivery"><div class="st-cart-summary-title">Delivery Details</div><div class="st-cart-delivery-details"><div class="st-cart-block-txt">Personal Deatils</div><div class="st-cart-form"> <input type="text" class="st-cart-input-field w-input" maxlength="256" name="name" data-name="Name" placeholder="Name" id="st-name"><input type="text" class="st-cart-input-field w-input" maxlength="256" name="email" data-name="email" placeholder="Email Address" id="st-email"><input type="text" class="st-cart-input-field w-input" maxlength="256" name="phone" data-name="phone" placeholder="Phone Number (Optional)" id="st-phone"><input type="text" class="st-cart-input-field w-input" maxlength="256" name="address1" data-name="address1" placeholder="Street Address 1" id="st-address"><input type="text" class="st-cart-input-field w-input" maxlength="256" name="address2" data-name="address2" placeholder="Street Address 2 (Optional)" id="st-address-2"><select id="st-country" name="country" data-name="country" class="st-select-field w-select"><option value="">Select a country...</option> </select><select id="st-state" name="state" data-name="state" class="st-select-field w-select"><option value="">Select a state...</option> </select><input type="text" class="st-cart-input-field w-input" maxlength="256" name="city" data-name="city" placeholder="City" id="st-city"><input type="text" class="st-cart-input-field w-input" maxlength="256" name="pincode" data-name="pincode" placeholder="Postal Code" id="st-pincode"></div></div></div><div id="st-cart-payment" class="st-cart-payment"><div id="st-vendor-shipping-000" class="st-vendor-shipping"><div id="shipping-mode" class="st-shipping-options-div"> <label for="name">Shipping Options</label> <select name="field" class="st-shipping-options"></select></div><div class="st-vendor-ship-product"><div class="st-cart-product-name">product name</div><div class="st-cart-product-no">0</div></div></div><div id="vcart-list"></div><div class="div-block-132"><div class="st-delivery-field"><div class="st-field-title">Name:</div><div id="shipping-name" class="st-field-value"></div></div><div class="st-delivery-field"><div class="st-field-title">phone</div><div id="shipping-phone" class="st-field-value"></div></div><div class="st-delivery-field"><div class="st-field-title">Email:</div><div id="shipping-email" class="st-field-value"></div></div><div class="st-delivery-field"><div class="st-field-title">Shipping Address:</div><div id="shipping-address" class="st-field-value"></div></div><div class="st-delivery-field"><div class="st-field-title">Billing Address:</div><div id="billing-address" class="st-field-value"></div></div></div></div><div class="st-cart-nav-bar"><div id="st-cart-back" class="st-cart-back" onclick="changeState(-1)">Back</div><div id="st-cart-next-btn" class="st-cart-next-btn" onclick="changeState(1)">Proceed to Delivery</div></div></div></div>`;
 let st_cosellText = "NEW! - Earn up to {commission} every co-sale.<br/>Rewarded with real money through attributions.";
 let st_cosell_screen = `<div class="st-cosell-link-mask" id="st-cosell-intro-mask" style="display:none" onclick="hideElement(this)"><div class="st-cosell-links" onclick="event.stopPropagation()"><div class="st-cosell-links-header" id="st-cosell-links-header">{{site}} is proud to introduce &quot;Cosell&quot; , A unique way to boost the influencer in you.<br><span class="st-cosell-links-header-span">Share and make Money Instantly.</span></div><div class="st-cosell-body"><div class="st-cosell-steps-div"><div class="st-cosell-exp"><div class="st-cosell-exp-header-div"><h3 class="st-cosell-exp-header">How to be a Coseller</h3></div><div class="st-cosell-exp-steps"><div class="st-cosell-step"><div class="st-cosell-step-no st-cosell-step-overlay">1</div><div class="st-cosell-step-img-div"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/Phone-Register.png" loading="lazy" alt="" class="st-cosell-step-img"></div><div class="st-cosell-step-title">Signup</div></div><div class="st-cosell-step"><div class="st-cosell-step-no st-cosell-step-overlay">2</div><div class="st-cosell-step-img-div"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/Phone-Product.png" loading="lazy" alt="" class="st-cosell-step-img"></div><div class="st-cosell-step-title">Click Cosell on cool products</div></div><div class="st-cosell-step"><div class="st-cosell-step-no st-cosell-step-overlay">3</div><div class="st-cosell-step-img-div"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/Phone-Register.png" loading="lazy" alt="" class="st-cosell-step-img"></div><div class="st-cosell-step-title">Share with your Network</div></div></div></div><div class="st-cosell-signup"><div class="st-cosell-sugnup-btn" onclick="showLogin()">Become a Coseller</div></div></div><div class="st-cosell-adv"><div class="st-cosell-step-pts"><div class="st-cosell-step-no">1</div><div class="st-cosell-step-txt">Coselling is Free, No membership fee.</div></div><div class="st-cosell-step-pts"><div class="st-cosell-step-no">2</div><div class="st-cosell-step-txt">Cosell across all participating Market Networks, across the Internet.</div></div><div class="st-cosell-step-pts"><div class="st-cosell-step-no">3</div><div class="st-cosell-step-txt">Cosell links are unique. Share, get paid when inviting others to grow your referral Network.</div></div></div></div><div class="st-cosell-links-footer"><div class="st-cosell-footer-shoptype">Powered by <a href="https://www.shoptype.com" target="_blank" class="st-cosell-footer-shoptype-link">Shoptype</a></div> <a href="#" target="_blank" class="st-link-block"><div class="st-cosell-page-txt">Learn more about Coselling</div> </a></div></div></div>`;
+let st_coseller_profile = `<div class="st-cosell-link-mask" id="coseller-profile-mask" style="display:none" onclick="hideElement(this)"><div class="st-cosell-links" onclick="event.stopPropagation()"><div class="st-redirect"><div class="st-redirect-txt">To view earnings across all market networks, please visit:</div><div class="st-redirect-btn-div"> <a href="https://app.shoptype.com/" target="_blank" class="st-redirect-btn w-inline-block"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/Shoptype-Logo-White.png" loading="lazy" alt="" class="st-redirect-btn-image"><div class="st-redirect-btn-title">Visit Shoptype</div> </a><div class="st-redirect-btn-txt">(Redirects to Shoptype. Opens in new tab)</div></div></div><div class="st-coseller-db"><div class="st-coseller-db-title-div"><h1 id="st-coseller-db-heading" class="st-coseller-db-heading">Your Dashboard {site}</h1></div><div class="st-coseller-db-data"><div class="st-duration-selectors"><div id="st-duration-select-all" class="st-duration-select st-btn-select">All Time</div><div id="st-duration-select-month" class="st-duration-select">This Month</div><div id="st-duration-select-week" class="st-duration-select">This Week</div><div id="st-duration-select-day" class="st-duration-select">Today</div></div><div class="st-coseller-kpi-div"><div class="div-block-137"><div class="st-coseller-kpi"><div class="st-coseller-kpi-txt">Total Earnings</div><div id="st-coseller-kpi-val-tot-earning" class="st-coseller-kpi-val">000</div></div><div class="st-coseller-kpi"><div class="st-coseller-kpi-txt">Clicks</div><div id="st-coseller-kpi-val-tot-click" class="st-coseller-kpi-val">000</div></div><div class="st-coseller-kpi"><div class="st-coseller-kpi-txt">Publishes</div><div id="st-coseller-kpi-val-tot-publish" class="st-coseller-kpi-val">000</div></div><div class="st-coseller-kpi"><div class="st-coseller-kpi-txt">Currency</div><div id="st-coseller-kpi-val-currency" class="st-coseller-kpi-val">USD</div></div></div><div class="st-coseller-kpi-products"><div><h3 class="st-coseller-products-title">Products Published</h3></div><div class="st-coseller-products-list" id="st-coseller-products-list"><div class="st-coseller-product" id="st-coseller-product-000" style="display: none;"><div class="st-coseller-product-div"><div class="st-coseller-product-details"><div class="st-coseller-product-img-div"><img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" alt="" class="st-coseller-product-img"></div><div class="st-coseller-product-desc"><div class="st-coseller-product-name">Product Name</div><div class="st-coseller-product-vendor">Vendor Name</div></div></div><div class="st-coseller-product-kpi"><div class="st-coseller-kpi-txt">Total Earnings</div><div class="st-coseller-kpi-val st-product-tot-earnings">$ 000</div></div></div><div class="div-block-146"><div class="st-coseller-product-kpi"><div class="st-coseller-kpi-txt">Product Price</div><div class="st-coseller-kpi-val">00</div></div><div class="st-coseller-product-kpi"><div class="st-coseller-kpi-txt">Clicks</div><div class="st-coseller-kpi-val">00</div></div><div class="st-coseller-product-kpi"><div class="st-coseller-kpi-txt">Publishes</div><div class="st-coseller-kpi-val">00</div></div><div class="st-coseller-product-kpi"><div class="st-coseller-nudge-btn">Nudge</div></div></div></div></div></div></div></div></div></div></div>`;
 
 function setupCosellBtn(awakeTag){
 	let productUrl = getProductUrl(awakeTag);
@@ -278,8 +281,6 @@ function setupCosellBtn(awakeTag){
 				wraperDiv.style.width = wraperWidth;
 			}
 			awakeTag.parentNode.insertBefore(wraperDiv, awakeTag);
-			const cosellDiv = document.createElement("div");
-			cosellDiv.innerHTML = cosellMask+st_cosell_screen.replace("{{site}}", currentUrl.host);
 			let cosellBtnElem = wraperDiv.querySelector(".st-product-cosell-button");
 			cosellBtnElem.setAttribute("onclick","showCosell('"+productJson.id+"')");
 			let btnTxt = awakeTag.getAttribute("btnTxt");
@@ -289,8 +290,6 @@ function setupCosellBtn(awakeTag){
 				btnTxt = btnTxt.replace("{commission}", pricePrefix + commission.toFixed(2));
 				cosellBtnElem.innerHTML = btnTxt;
 			}
-			let body = document.getElementsByTagName('body')[0];
-			body.insertBefore(cosellDiv, body.firstChild);
 			if(awakeTag.getAttribute("details")=="hidden"){
 				let details = wraperDiv.querySelector(".st-cosell-note");
 				details.style.display="none";
@@ -507,7 +506,7 @@ function showCosell(productId){
 	if(!sessionStorage["userId"] || sessionStorage["userId"]==""){
 		document.getElementById("st-cosell-intro-mask").style.display="flex";
 	}else{
-		setupShare(stLoadedProducts[productId]);
+		stCallWithProduct(productId, setupShare);
 		document.getElementById("st-cosell-mask").style.display="flex";
 	}
 }
@@ -578,13 +577,11 @@ function removeClass(element, className){
 function openCart(){
 	cartMainFrame.style.display = "";
 	cartMainFrame.style.right= "0px";
-	document.dispatchEvent(shoptypeCartOpened);
 	moveToCart()
 }
 function closeCart(){
 	checkout = null;
 	cartMainFrame.style.right= "-400px";
-	document.dispatchEvent(shoptypeCartClosed);
 }
 function changeState(stateProg){
 	state+=stateProg;
@@ -665,7 +662,6 @@ function moveToDelivery(){
 				}else{
 					cartMainFrame.style.display = "";
 					cartMainFrame.style.right= "0px";
-					document.dispatchEvent(shoptypeCartOpened);
 					document.getElementById("st-cart-list").style.display = "none";
 					document.getElementById("st-cart-deliver").style.display = "flex";
 					document.getElementById("st-state-del").className = "st-state-selected";
@@ -782,19 +778,16 @@ function updateShipping(shippingKey){
 }
 function moveToPay(){
 	cartMainFrame.style.right= "-400px";
-	document.dispatchEvent(shoptypeCartClosed);
 	initSTPayment(checkout.id, st_backend, headerOptions.headers["X-Shoptype-Api-Key"], paymentComplete)
 }
 function paymentComplete(payload){
 	switch(payload.status){
 	case "failed":
 		cartMainFrame.style.right= "0px";
-		document.dispatchEvent(shoptypeCartOpened);
 		showError(payload.message);
 		break;
 	case "closed":
 		cartMainFrame.style.right= "0px";
-		document.dispatchEvent(shoptypeCartOpened);
 		break;
 	case "success":
 		closeCart();
@@ -1024,6 +1017,84 @@ function addProductToCart(cartId, productId, varientId, quantity, callback){
 		})
 		.catch(err => console.info(err));
 }
+function stShowCosellerDashboard(){
+		if(!sessionStorage["userId"] || sessionStorage["userId"]==""){
+			showLogin();
+		}
+		else{
+			stAuthenticateCoseller(stToken)
+		}
+	}
+
+function stAuthenticateCoseller(token){		
+	headerOptions.method = 'POST';
+	headerOptions.headers.Authorization = token;
+	headerOptions.body = '{"userType": "coseller"}';
+
+	fetch(st_backend + "/authenticate", headerOptions)
+		.then(response => response.json())
+		.then(authJson => {
+			displayCosellerSummary(authJson.token);
+			displayCosellerDetails(authJson.token);
+			document.getElementById('coseller-profile-mask').style.display="flex";
+		});
+}
+
+function displayCosellerSummary(token){
+	headerOptions.headers.Authorization = token;
+	headerOptions.body = '{userType: "coseller"}';
+	headerOptions.method = 'get';
+	headerOptions.body = null;
+	fetch(st_backend + "/coseller-dashboard?viewType=cosellerView&currency=" + st_defaultCurrency, headerOptions)
+		.then(response => response.json())
+		.then(cosellerJson => {
+			document.getElementById('st-coseller-kpi-val-tot-earning').innerHTML = cosellerJson.total_commissions;
+			document.getElementById('st-coseller-kpi-val-tot-click').innerHTML = cosellerJson.total_clicks;
+			document.getElementById('st-coseller-kpi-val-tot-publish').innerHTML = cosellerJson.total_publishes;
+			document.getElementById('st-coseller-kpi-val-currency').innerHTML = cosellerJson.currency;
+		});
+}
+
+function stCallWithProduct(productId, callback){
+	if(stLoadedProducts[productId]){
+		callback(stLoadedProducts[productId])
+	}else{
+		fetch(st_backend +"/products/"+productId)
+		.then(response => response.json())
+		.then(productJson => {
+			stLoadedProducts[productId] = productJson;
+			callback(productJson);
+		});
+	}
+}
+
+function displayCosellerDetails(token){
+	headerOptions.headers.Authorization = token;
+	headerOptions.body = '{userType: "coseller"}';
+	headerOptions.method = 'get';
+	headerOptions.body = null;
+	fetch(st_backend + "/coseller-dashboard?viewType=cosellerProductView&count=20&offset=0&currency=" + st_defaultCurrency, headerOptions)
+		.then(response => response.json())
+		.then(cosellerJson => {
+			let productList = document.getElementById("st-coseller-products-list");
+			let productTemplate = document.getElementById("st-coseller-product-000");
+			for (var i = 0; i < cosellerJson.length; i++) {
+				let productClone=productTemplate.cloneNode(true);
+				productClone.style.display="";
+				productClone.querySelector(".st-coseller-product-img").src = cosellerJson[i].image_url;
+				productClone.querySelector(".st-coseller-product-name").innerHTML = cosellerJson[i].title;
+				productClone.querySelector(".st-coseller-product-vendor").innerHTML = cosellerJson[i].vendorName;
+				let kpiValues = productClone.getElementsByClassName("st-coseller-kpi-val");
+				kpiValues[0].innerHTML= cosellerJson[i].total_commissions;
+				kpiValues[1].innerHTML= cosellerJson[i].price;
+				kpiValues[2].innerHTML= cosellerJson[i].total_clicks;
+				kpiValues[3].innerHTML= cosellerJson[i].total_publishes;
+				productList.appendChild(productClone);
+				productClone.querySelector(".st-coseller-nudge-btn").setAttribute("onclick","showCosell('"+cosellerJson[i].productId+"')")
+			}
+		});
+}
+
 function createCartAddProduct(vendorId, productId, varientId, quantity, callback){
 	headerOptions.method = "post";
 	headerOptions.body = "{}";
