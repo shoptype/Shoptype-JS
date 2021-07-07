@@ -185,7 +185,8 @@ function initShoptype(){
 		cartWraper.innerHTML = cartIframeHtml + 
 								st_coseller_profile.replace("{site}", currentUrl.hostname) +
 								cosellMask+
-								st_cosell_screen.replace("{{site}}", currentUrl.host);;		
+								st_cosell_screen.replace("{{site}}", currentUrl.host)+
+								st_loader;		
 		body.insertBefore(cartWraper, body.firstChild);
 		cartMainFrame = document.getElementById("st-cart-iframe-block");
 		headerOptions.headers["X-Shoptype-Api-Key"] = apiKey;
@@ -209,6 +210,9 @@ function initShoptype(){
 					break;
 				case 'buyNowBtn':
 					setupBuyBtn(awakeTags[i], true);
+					break;
+				case 'profile':
+					setupProfileBtn(awakeTags[i]);
 					break;
 				default:
 					console.info(`Unknown Awake tag type`)
@@ -255,6 +259,8 @@ let cartIframeHtml = `<div id="st-cart-iframe-block" style="display:none" class=
 let st_cosellText = "NEW! - Earn up to {commission} every co-sale.<br/>Rewarded with real money through attributions.";
 let st_cosell_screen = `<div class="st-cosell-link-mask" id="st-cosell-intro-mask" style="display:none" onclick="hideElement(this)"><div class="st-cosell-links" onclick="event.stopPropagation()"><div class="st-cosell-links-header" id="st-cosell-links-header">{{site}} is proud to introduce &quot;Cosell&quot; , A unique way to boost the influencer in you.<br><span class="st-cosell-links-header-span">Share and make Money Instantly.</span></div><div class="st-cosell-body"><div class="st-cosell-steps-div"><div class="st-cosell-exp"><div class="st-cosell-exp-header-div"><h3 class="st-cosell-exp-header">How to be a Coseller</h3></div><div class="st-cosell-exp-steps"><div class="st-cosell-step"><div class="st-cosell-step-no st-cosell-step-overlay">1</div><div class="st-cosell-step-img-div"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/Phone-Register.png" loading="lazy" alt="" class="st-cosell-step-img"></div><div class="st-cosell-step-title">Signup</div></div><div class="st-cosell-step"><div class="st-cosell-step-no st-cosell-step-overlay">2</div><div class="st-cosell-step-img-div"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/Phone-Product.png" loading="lazy" alt="" class="st-cosell-step-img"></div><div class="st-cosell-step-title">Click Cosell on cool products</div></div><div class="st-cosell-step"><div class="st-cosell-step-no st-cosell-step-overlay">3</div><div class="st-cosell-step-img-div"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/Phone-Register.png" loading="lazy" alt="" class="st-cosell-step-img"></div><div class="st-cosell-step-title">Share with your Network</div></div></div></div><div class="st-cosell-signup"><div class="st-cosell-sugnup-btn" onclick="showLogin()">Become a Coseller</div></div></div><div class="st-cosell-adv"><div class="st-cosell-step-pts"><div class="st-cosell-step-no">1</div><div class="st-cosell-step-txt">Coselling is Free, No membership fee.</div></div><div class="st-cosell-step-pts"><div class="st-cosell-step-no">2</div><div class="st-cosell-step-txt">Cosell across all participating Market Networks, across the Internet.</div></div><div class="st-cosell-step-pts"><div class="st-cosell-step-no">3</div><div class="st-cosell-step-txt">Cosell links are unique. Share, get paid when inviting others to grow your referral Network.</div></div></div></div><div class="st-cosell-links-footer"><div class="st-cosell-footer-shoptype">Powered by <a href="https://www.shoptype.com" target="_blank" class="st-cosell-footer-shoptype-link">Shoptype</a></div> <a href="#" target="_blank" class="st-link-block"><div class="st-cosell-page-txt">Learn more about Coselling</div> </a></div></div></div>`;
 let st_coseller_profile = `<div class="st-cosell-link-mask" id="coseller-profile-mask" style="display:none" onclick="hideElement(this)"><div class="st-cosell-links" onclick="event.stopPropagation()"><div class="st-redirect"><div class="st-redirect-txt">To view earnings across all market networks, please visit:</div><div class="st-redirect-btn-div"> <a href="https://app.shoptype.com/" target="_blank" class="st-redirect-btn w-inline-block"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/Shoptype-Logo-White.png" loading="lazy" alt="" class="st-redirect-btn-image"><div class="st-redirect-btn-title">Visit Shoptype</div> </a><div class="st-redirect-btn-txt">(Redirects to Shoptype. Opens in new tab)</div></div></div><div class="st-coseller-db"><div class="st-coseller-db-title-div"><h1 id="st-coseller-db-heading" class="st-coseller-db-heading">Your Dashboard {site}</h1></div><div class="st-coseller-db-data"><div class="st-duration-selectors"><div id="st-duration-select-all" class="st-duration-select st-btn-select">All Time</div><div id="st-duration-select-month" class="st-duration-select">This Month</div><div id="st-duration-select-week" class="st-duration-select">This Week</div><div id="st-duration-select-day" class="st-duration-select">Today</div></div><div class="st-coseller-kpi-div"><div class="div-block-137"><div class="st-coseller-kpi"><div class="st-coseller-kpi-txt">Total Earnings</div><div id="st-coseller-kpi-val-tot-earning" class="st-coseller-kpi-val">000</div></div><div class="st-coseller-kpi"><div class="st-coseller-kpi-txt">Clicks</div><div id="st-coseller-kpi-val-tot-click" class="st-coseller-kpi-val">000</div></div><div class="st-coseller-kpi"><div class="st-coseller-kpi-txt">Publishes</div><div id="st-coseller-kpi-val-tot-publish" class="st-coseller-kpi-val">000</div></div><div class="st-coseller-kpi"><div class="st-coseller-kpi-txt">Currency</div><div id="st-coseller-kpi-val-currency" class="st-coseller-kpi-val">USD</div></div></div><div class="st-coseller-kpi-products"><div><h3 class="st-coseller-products-title">Products Published</h3></div><div class="st-coseller-products-list" id="st-coseller-products-list"><div class="st-coseller-product" id="st-coseller-product-000" style="display: none;"><div class="st-coseller-product-div"><div class="st-coseller-product-details"><div class="st-coseller-product-img-div"><img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" alt="" class="st-coseller-product-img"></div><div class="st-coseller-product-desc"><div class="st-coseller-product-name">Product Name</div><div class="st-coseller-product-vendor">Vendor Name</div></div></div><div class="st-coseller-product-kpi"><div class="st-coseller-kpi-txt">Total Earnings</div><div class="st-coseller-kpi-val st-product-tot-earnings">$ 000</div></div></div><div class="div-block-146"><div class="st-coseller-product-kpi"><div class="st-coseller-kpi-txt">Product Price</div><div class="st-coseller-kpi-val">00</div></div><div class="st-coseller-product-kpi"><div class="st-coseller-kpi-txt">Clicks</div><div class="st-coseller-kpi-val">00</div></div><div class="st-coseller-product-kpi"><div class="st-coseller-kpi-txt">Publishes</div><div class="st-coseller-kpi-val">00</div></div><div class="st-coseller-product-kpi"><div class="st-coseller-nudge-btn">Nudge</div></div></div></div></div></div></div></div></div></div></div>`;
+let st_profile_btn = `<div class="st-coseller-profile"><div class="st-coseller-profile-btn" onclick="stToggleElement('#st-coseller-profile-menu')"></div><div id="st-coseller-profile-menu" class="st-coseller-profile-menu" style="display:none;"><div class="st-profile-menu-item" onclick="stShowCosellerDashboard()">Profile</div><div class="st-profile-menu-item" onclick="stShowCosellerDashboard()">Coseller Dashboard</div><div class="st-profile-menu-item" onclick="shoptypeLogout()">Sign out</div></div></div>`;
+let st_loader = '<div class="st-loader-mask" id="st-loader-mask" style="display:none;"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/loader.gif" alt="" style="max-width: 20%;"></div>';
 
 function setupCosellBtn(awakeTag){
 	let productUrl = getProductUrl(awakeTag);
@@ -356,6 +362,12 @@ function setupBuyBtn(awakeTag, isBuyNow){
 			//awakeTag.remove();
 			sendUserEvent();
 		});
+}
+
+function setupProfileBtn(awakeTag){
+	const wraperDiv = document.createElement("div");
+	wraperDiv.innerHTML = st_profile_btn;
+	awakeTag.parentNode.insertBefore(wraperDiv, awakeTag);
 }
 
 function setProductId(productId){
@@ -621,6 +633,7 @@ function moveToCart(){
 }
 function moveToDelivery(){
 	state = 1;
+	stShowLoader();
 	getDeviceId().
 		then(deviceId=>{
 		headerOptions.method = 'post';
@@ -630,8 +643,9 @@ function moveToDelivery(){
 		}
 		headerOptions.body = JSON.stringify(data);
 		fetch(st_backend + "/checkout", headerOptions)
-		.then(response => response.json())
-		.then(checkoutJson => {
+			.then(response => response.json())
+			.then(checkoutJson => {
+				stHideLoader();
 				checkout = checkoutJson;
 				checkout.id = checkoutJson.checkout_id;
 				if(checkoutJson.message){
@@ -678,6 +692,7 @@ function moveToDelivery(){
 }
 function moveToPayments(){
 	state = 2;
+	stShowLoader();
 	headerOptions.method = "put";
 	let countrySelect = document.getElementById("st-country");
 	let stateSelect = document.getElementById("st-state");
@@ -701,6 +716,7 @@ function moveToPayments(){
 	fetch(st_backend + `/checkout/${checkout.id}/address`, headerOptions)
 		.then(response => response.json())
 		.then(checkoutJson => {
+			stHideLoader();
 			if(checkoutJson.error){
 				state--;
 				showError(checkoutJson.message);
@@ -759,6 +775,7 @@ function setupOrder(){
 	document.getElementById("billing-address").innerHTML = checkout.billing_address.street1 + ", " + checkout.billing_address.city + ", " + checkout.billing_address.state + ", " + checkout.billing_address.country + " - " + checkout.billing_address.postalCode;
 }
 function updateShipping(shippingKey){
+	stShowLoader(1000);
 	let orderKey = Object.keys(checkout.order_details_per_vendor);
 	let shippingBody = `{
 		"method_key_per_vendor": {
@@ -772,6 +789,7 @@ function updateShipping(shippingKey){
 	fetch(st_backend + `/checkout/${checkout.id}/shipping-method`, headerOptions)
 		.then(response => response.json())
 		.then(checkoutJson => {
+			stHideLoader();
 			checkout = checkoutJson;
 			setupOrder();
 		});
@@ -1162,4 +1180,21 @@ function removeAllChildNodes(parent) {
 }
 function hideElement(element){
 	element.style.display="none";
+}
+function stToggleElement(selector){
+	let element = document.querySelector(selector);
+	if(element){
+		if(element.style.display=="none"){
+			element.style.display="";
+		}else{
+			element.style.display="none";
+		}
+	}
+}
+function stShowLoader(hideDelay=5000){
+	document.getElementById("st-loader-mask").style.display = "";
+	setTimeout(function(){stHideLoader();}, hideDelay);
+}
+function stHideLoader(){
+	document.getElementById("st-loader-mask").style.display = "none";
 }
