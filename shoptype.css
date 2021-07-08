@@ -1577,7 +1577,7 @@
 
 .st-coseller-kpi-products {
   overflow: auto;
-  max-height: calc(100vh - 330px);
+  max-height: calc(100vh - 400px);
 }
 
 .text-block-7 {
@@ -1645,8 +1645,8 @@
 }
 
 .st-coseller-profile-btn {
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
   background-image: url('https://in.awake.market/wp-content/themes/marketo/assets/images/profile_button.png');
   background-position: 50% 50%;
   background-size: contain;
@@ -1661,6 +1661,7 @@
 
 .st-coseller-profile-menu {
   position: absolute;
+  background-color: #ffffff;
   right: 0px;
   width: 180px;
   padding: 20px 10px;
