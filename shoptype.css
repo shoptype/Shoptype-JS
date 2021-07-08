@@ -1275,7 +1275,8 @@
   text-decoration: none;
 }
 
-.st-redirect {
+.-btn
+{
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1313,7 +1314,7 @@
   -ms-flex-align: center;
   align-items: center;
   border-radius: 5px;
-  background-color: #ffa012;
+  background-color: #F0D64E;
 }
 
 .st-redirect-btn-title {
