@@ -1,3 +1,17 @@
+:root {
+  --primary-color: #5377ab;
+  --primary-color-comp: #ffffff;
+  --primary-color-selected: #5377ab;
+  --primary-color-selected-comp: #ffffff;
+  --secondary-color: #eeeeee;
+  --secondary-color-comp: #000000;
+  --button-color: #5377ab;
+  --button-text-color: #ffffff;
+  --button-color-hover: #5377ab;
+  --button-text-color-hover: #ffffff;
+  --background-color-cart: #f2efe4;
+  --background-color: #ffffff;
+}
 .st-cosell-mask {
   position: fixed;
   left: 0%;
@@ -65,8 +79,8 @@
   align-items: center;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-  background-color: #5377ab;
-  color: #fff;
+  background-color: var(--primary-color);
+  color: var(--primary-color-comp);
   line-height: 30px;
   cursor: pointer;
 }
@@ -96,8 +110,8 @@
   padding-right: 10px;
   padding-left: 10px;
   border-radius: 5px;
-  background-color: #5377ab;
-  color: #fff;
+  background-color: var(--primary-color);
+  color: var(--primary-color-comp);
   line-height: 30px;
   text-align: center;
 }
@@ -116,16 +130,17 @@
   align-items: center;
   border-style: none;
   border-width: 1px;
-  border-color: #5377ab;
+  border-color: var(--button-text-color);
+  color: var(--button-text-color);
   border-radius: 10px 10px 0px 0px;
   overflow: hidden;
-  background-color: #fff;
+  background-color: var(--button-color);
 }
 .st-product-cosell-button {
   width: 100%;
   height: 40px;
-  background-color: #fff;
-  color: #000;
+  background-color: var(--button-color);
+  color: var(--button-text-color);
   font-size: 20px;
   line-height: 40px;
   font-weight: 400;
@@ -133,11 +148,16 @@
   cursor: pointer;
   border: 1px solid #ccc;
 }
+.st-product-cosell-button:hover {
+    background-color: var(--button-color-hover);
+    color: var(--button-text-color);
+}
 .st-cosell-note {
   padding-top: 30px;
   padding: 5px 10px;
   border-radius: 0px 0px 10px 10px;
-  background-color: #5377ab;
+  background-color: var(--primary-color);
+  color: var(--primary-color-comp);
 }
 .st-cosell-text {
   margin: 4px 0px 4px 0px;
@@ -250,16 +270,16 @@
   margin-right: auto;
   margin-left: auto;
   border-left: 1px solid #e2dfd4;
-  background-color: #f2efe4;
+  background-color: var(--background-color-cart);
 }
 .st-product-buy-button {
   height: 40px;
   margin-right: 5px;
   margin-left: 5px;
   border-radius: 10px;
-  background-color: #27ae61;
+  background-color: var(--button-color);
   font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
-  color: #fff;
+  color: var(--button-text-color);
   font-size: 18px;
   line-height: 40px;
   font-weight: 400;
@@ -268,14 +288,18 @@
   padding-right: 20px;
   padding-left: 20px;
 }
+.st-product-buy-button:hover {
+    background-color: var(--button-color-hover);
+    color: var(--button-text-color);
+}
 .st-product-buynow-button {
   height: 40px;
   margin-right: 5px;
   margin-left: 5px;
   border-radius: 10px;
-  background-color: #27ae61;
+  background-color: var(--primary-color);
   font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
-  color: #fff;
+  color: var(--primary-color-comp);
   font-size: 18px;
   line-height: 40px;
   font-weight: 400;
@@ -283,6 +307,10 @@
   cursor: pointer;
   padding-right: 20px;
   padding-left: 20px;
+}
+.st-product-buynow-button:hover {
+    background-color: var(--button-color-hover);
+    color: var(--button-text-color);
 }
 .st-cart-summmary-tot-val {
   margin-right: 20px;
@@ -330,8 +358,8 @@
   padding-left: 0px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  background-color: #5377ab;
-  color: #fff;
+  background-color: var(--primary-color);
+  color: var(--primary-color-comp);
   font-size: 24px;
   line-height: 22px;
   font-weight: 400;
@@ -374,7 +402,7 @@
   -ms-flex-direction: column;
   flex-direction: column;
   border-radius: 20px;
-  background-color: #fff;
+  background-color: var(--background-color);
 }
 
 .st-cart-back {
@@ -382,8 +410,8 @@
   padding-right: 20px;
   padding-left: 20px;
   border-radius: 15px;
-  background-color: #5377ab;
-  color: #fff;
+  background-color: var(--primary-color);
+  color: var(--primary-color-comp);
   font-size: 16px;
   line-height: 30px;
   text-align: center;
@@ -436,8 +464,8 @@
   padding-right: 20px;
   padding-left: 20px;
   border-radius: 20px;
-  background-color: #27ae61;
-  color: #fff;
+  background-color: var(--primary-color-selected);
+  color: var(--primary-color-selected-comp);
   font-size: 16px;
   line-height: 30px;
   text-align: center;
@@ -450,8 +478,8 @@
   padding-top: 0px;
   padding-bottom: 0px;
   border-radius: 15px;
-  background-color: #5377ab;
-  color: #fff;
+  background-color: var(--primary-color);
+  color: var(--primary-color-comp);
   margin: 5px 0px 0px;
 }
 
@@ -460,7 +488,7 @@
   margin-right: 10px;
   margin-left: 10px;
   border-radius: 20px;
-  background-color: #fff;
+  background-color: var(--primary-color-comp);
 }
 
 .st-cart-product-quant {
@@ -489,9 +517,9 @@
   height: 24px;
   border-style: solid;
   border-width: 4px;
-  border-color: #e7e4d5;
+  border-color: var(--primary-color-selected-comp);
   border-radius: 50%;
-  background-color: #5377ab;
+  background-color: var(--primary-color-selected);
 }
 
 .st-cart-nav-bar {
@@ -595,7 +623,7 @@
 
 .st-cart-summary-val {
   margin-right: 20px;
-  color: #5377ab;
+  color: var(--primary-color);
   font-weight: 700;
 }
 
@@ -701,7 +729,7 @@
   -webkit-justify-content: space-between;
   -ms-flex-pack: justify;
   justify-content: space-between;
-  background-color: #5377ab;
+  background-color: var(--primary-color);
 }
 
 .st-cart-product-name {
@@ -846,9 +874,9 @@
   padding-top: 0px;
   padding-bottom: 0px;
   border-radius: 15px;
-  background-color: #5377ab;
+  background-color: var(--primary-color);
   margin: 5px 0px;
-  color: #fff;
+  color: var(--primary-color-comp);
 }
 .st-loader-mask {
     width: 100%;
@@ -930,7 +958,8 @@
   bottom: auto;
   z-index: 2;
   padding: 20px 40px;
-  background-color: #eee;
+  background-color: var(--secondary-color);
+  color: var(--secondary-color-comp);
   font-size: 19px;
   line-height: 24px;
   font-weight: 400;
@@ -1033,7 +1062,8 @@
   -webkit-justify-content: space-between;
   -ms-flex-pack: justify;
   justify-content: space-between;
-  background-color: #eee;
+  background-color: var(--secondary-color);
+  color: var(--secondary-color-comp);
 }
 
 .st-cosell-step-pts {
@@ -1100,9 +1130,10 @@
 
 .st-cosell-sugnup-btn {
   padding: 10px 20px;
-  border: 1px solid #aaa;
+  border: 1px solid var(--primary-color-comp);
   border-radius: 5px;
-  background-color: #aaa;
+  background-color: var(--primary-color);
+  color: var(--primary-color-comp);
   font-size: 18px;
   line-height: 30px;
   font-weight: 700;
@@ -1232,7 +1263,8 @@
   -ms-flex: 0 50%;
   flex: 0 50%;
   border-radius: 5px;
-  background-color: #ccc;
+  background-color: var(--primary-color);
+  color: var(--primary-color-comp);
   line-height: 30px;
   text-align: center;
   cursor: pointer;
@@ -1614,8 +1646,8 @@
   -ms-flex: 1;
   flex: 1;
   border-radius: 5px;
-  background-color: #ffa012;
-  color: #fff;
+  background-color: var(--primary-color);
+  color: var(--primary-color-comp);
   font-size: 16px;
   font-weight: 700;
   text-align: center;
