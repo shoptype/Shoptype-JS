@@ -114,6 +114,20 @@
 	bindReady();
 	
 })();
+
+function removeAccessTokenFromUrl() {
+  const { history, location } = window
+  const { search } = location
+  if (search && search.indexOf('token') !== -1 && history && history.replaceState) {
+    // remove access_token from url
+    const cleanSearch = search.replace(/(\&|\?)token([_A-Za-z0-9=\.%]+)/g, '').replace(/^&/, '?');
+    // replace search params with clean params
+    const cleanURL = location.toString().replace(search, cleanSearch);
+    // use browser history API to clean the params
+    history.replaceState({}, '', cleanURL);
+  }
+}
+
 const currentUrl = new URL(window.location);
 const st_backend = "https://backend.shoptype.com";
 const stLoginEvent = new Event('userLogin');
@@ -150,6 +164,7 @@ getAllVendors();
 
 if(stToken && stToken!=""){
 	setCookie("stToken", stToken, 20);
+	removeAccessTokenFromUrl();
 }else{
 	stToken = getCookie("stToken");
 }
