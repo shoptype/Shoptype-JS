@@ -485,6 +485,8 @@ function setupShare(product){
 			let refUrl = "";
 			if(st_refUrl!=null){
 				refUrl = st_refUrl.replace("{pid}", product.id);
+				refUrl += refUrl.indexOf("?")<0?"?":"&";
+				refUrl += "tid=" + trackerJson.trackerId;
 			}else{
 				refUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + insertParam("tid", trackerJson.trackerId, params);
 			}
