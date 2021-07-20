@@ -119,11 +119,8 @@ function removeAccessTokenFromUrl() {
   const { history, location } = window
   const { search } = location
   if (search && search.indexOf('token') !== -1 && history && history.replaceState) {
-    // remove access_token from url
-    const cleanSearch = search.replace(/(\&|\?)token([_A-Za-z0-9=\.%]+)/g, '').replace(/^&/, '?');
-    // replace search params with clean params
+    const cleanSearch = search.replace(/(\&|\?)token([_A-Za-z0-9=\.\-%]+)/g, '').replace(/^&/, '?');
     const cleanURL = location.toString().replace(search, cleanSearch);
-    // use browser history API to clean the params
     history.replaceState({}, '', cleanURL);
   }
 }
@@ -137,6 +134,7 @@ const cssUrl = "https://in.awake.market/wp-content/themes/marketo/assets/css/sho
 const stLoadedProducts = {};
 const cartUrl = "https://app.shoptype.com/cart";
 const st_defaultCurrency = "USD";
+let st_refUrl = null;
 let currentPageProductId = null;
 let stToken = currentUrl.searchParams.get("token");
 let stCheckoutType = "same";
@@ -148,8 +146,8 @@ let checkout = null;
 let headerOptions = {
 			method:'',
 			'headers': {
-			'Content-Type': 'application/json',
-			'X-Shoptype-Api-Key': ""
+				'Content-Type': 'application/json',
+				'X-Shoptype-Api-Key': ""
 			},	
 			body: null
 		};
@@ -196,6 +194,7 @@ function initShoptype(){
 		st_refCode = awakeSetup[0].getAttribute("refcode");
 		st_hostDomain = awakeSetup[0].getAttribute("hostdomain");
 		stCheckoutType = awakeSetup[0].getAttribute("checkoutin")??"same";
+		st_refUrl = awakeSetup[0].getAttribute("refurl")??null;
 		if(overrideCss){
 			loadCSS(overrideCss);
 		}else{
@@ -483,7 +482,12 @@ function setupShare(product){
 		.then(trackerJson=>{
 			let sharetxt = "Hey found this really interesting product you may be iterested in ";
 			let params = removeParam("token", window.location.search);
-			let refUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + insertParam("tid", trackerJson.trackerId, params);
+			let refUrl = "";
+			if(st_refUrl!=null){
+				refUrl = st_refUrl.replace("{pid}", product.id);
+			}else{
+				refUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + insertParam("tid", trackerJson.trackerId, params);
+			}
 			let encodedUrl = encodeURIComponent(refUrl);
 			document.getElementById("st-fb-link").href = "https://www.facebook.com/sharer/sharer.php?u="	+ encodedUrl;
 			document.getElementById("st-whatsapp-link").href = "whatsapp://send?text=" + sharetxt + product.title + " " + encodedUrl;
