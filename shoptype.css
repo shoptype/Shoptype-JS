@@ -136,6 +136,10 @@
   overflow: hidden;
   background-color: var(--button-color);
 }
+.st-cosell:hover {
+    background-color: var(--button-color-hover);
+    color: var(--button-text-color);
+}
 .st-product-cosell-button {
   width: 100%;
   height: 40px;
@@ -147,10 +151,6 @@
   text-align: center;
   cursor: pointer;
   border: 1px solid #ccc;
-}
-.st-product-cosell-button:hover {
-    background-color: var(--button-color-hover);
-    color: var(--button-text-color);
 }
 .st-cosell-note {
   padding-top: 30px;

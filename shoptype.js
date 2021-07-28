@@ -976,21 +976,22 @@ function addCart(cartId){
 }
 function refreshCart(cartNode){
 	let cartId = cartNode.id;
-	removeAllChildNodes(cartNode.querySelector(".st-cart-products"));
+
 	headerOptions.method = 'get';
 	headerOptions.body = null;
 	fetch(st_backend + "/cart/" + cartId,headerOptions)
 		.then(response => response.json())
 		.then(cartJson => {
-		if(cartJson.cart_lines && cartJson.cart_lines.length>0){
-			cartNode.style.display = "block";
-			cartNode.setAttribute("id", cartId);
-			addCartProducts(cartJson, cartNode);
-			selectCart(cartNode);
-		}else{
-			selectCart(null);
-			cartNode.remove();
-		}
+			removeAllChildNodes(cartNode.querySelector(".st-cart-products"));
+			if(cartJson.cart_lines && cartJson.cart_lines.length>0){
+				cartNode.style.display = "block";
+				cartNode.setAttribute("id", cartId);
+				addCartProducts(cartJson, cartNode);
+				selectCart(cartNode);
+			}else{
+				selectCart(null);
+				cartNode.remove();
+			}
 		});
 }
 function addCartProducts(cartJson, newCart){
