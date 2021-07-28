@@ -1008,8 +1008,6 @@ function addCartProducts(cartJson, newCart){
 		let newProduct = productTemplate.cloneNode(true);
 		let curr = stCurrency[cartJson.cart_lines[i].price.currency]?stCurrency[cartJson.cart_lines[i].price.currency]:cartJson.cart_lines[i].price.currency;
 		newProduct.querySelector(".st-cart-product-delete").setAttribute("onclick","removeProduct(this)");
-		newProduct.querySelector(".st-product-add").setAttribute("onclick","updateQuant(this,1)");
-		newProduct.querySelector(".st-product-minus").setAttribute("onclick","updateQuant(this,-1)");
 		newProduct.setAttribute("id", cartJson.cart_lines[i].product_id);
 		newProduct.querySelector(".st-cart-product-name").innerHTML = cartJson.cart_lines[i].name;
 		newProduct.querySelector(".st-cart-product-image").src = cartJson.cart_lines[i].image_src;
@@ -1030,6 +1028,8 @@ function removeProduct(deleteButton){
 	let cartId = cartNode.id;
 	updateProductQuant(cartId,productId,variantId,0);
 }
+let quantityChange = {};
+let timeout;
 function updateQuant(button, addValue){
 	let productNode = button.parentNode.parentNode.parentNode.parentNode.parentNode;
 	let cartNode = productNode.parentNode.parentNode;
@@ -1037,8 +1037,22 @@ function updateQuant(button, addValue){
 	let variantId = productNode.getAttribute("variantid");
 	let quantity = parseInt(productNode.querySelector(".st-cart-product-quant").innerHTML);
 	let cartId = cartNode.id;
-	updateProductQuant(cartId,productId,variantId,quantity+addValue);
+	let productKey = cartId+productId+variantId;
+	if(quantityChange[productKey] && quantityChange[productKey]!=null){
+		quantityChange[productKey]+=addValue;
+		clearTimeout(timeout);
+	}else{
+		quantityChange[productKey] = quantity+addValue;
+	}
+	button.parentNode.querySelector(".st-cart-product-quant").innerHTML = quantityChange[productKey];
+	timeout = setTimeout(function(){
+		let newCount = quantityChange[productKey];
+		delete quantityChange[productKey];
+		clearTimeout(timeout);
+		updateProductQuant(cartId,productId,variantId,newCount);
+	}, 500);
 }
+
 function updateProductQuant(cartId, productId, variantId, quantity){
 	let payload = {
 					"product_id": productId,
