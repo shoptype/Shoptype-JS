@@ -493,14 +493,12 @@
 
 .st-cart-product-quant {
   display: block;
-  height: 100%;
   min-width: 28px;
   border-style: solid none;
   border-width: 1px;
   border-color: #aaa;
   background-color: #fff;
   font-size: 16px;
-  line-height: 20px;
   font-weight: 400;
   text-align: center;
 }

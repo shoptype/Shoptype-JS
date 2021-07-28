@@ -1061,10 +1061,12 @@ function updateProductQuant(cartId, productId, variantId, quantity){
 				}
 	headerOptions.method = 'put';
 	headerOptions.body = JSON.stringify(payload);
+	stShowLoader();
 	fetch(st_backend + "/cart/" + cartId,headerOptions)
 		.then(response => response.json())
 		.then(cartJson => {
 			updateCart(cartId);
+			stHideLoader();
 		})
 		.catch(err => console.info(err));
 }
