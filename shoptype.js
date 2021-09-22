@@ -134,6 +134,7 @@ const cssUrl = "https://in.awake.market/wp-content/themes/marketo/assets/css/sho
 const stLoadedProducts = {};
 const cartUrl = "https://app.shoptype.com/cart";
 const st_defaultCurrency = "USD";
+const st_loadedJs = [];
 let st_refUrl = null;
 let currentPageProductId = null;
 let stToken = currentUrl.searchParams.get("token");
@@ -210,13 +211,9 @@ function initShoptype(){
 		body.insertBefore(cartWraper, body.firstChild);
 		cartMainFrame = document.getElementById("st-cart-iframe-block");
 		headerOptions.headers["X-Shoptype-Api-Key"] = apiKey;
-		st_loadScript("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js", sendUserEvent);
-		st_loadScript("https://shoptype-scripts.s3.amazonaws.com/payment_js/st-payment-handlers-bundle.js");
-		st_loadScript("https://js.stripe.com/v3/");
-		st_loadScript("https://checkout.razorpay.com/v1/checkout.js");
 		setupCart();
+		getAllVendors();
 		document.dispatchEvent(stShoptypeInit);
-
 		for (var i = 0; i < awakeTags.length; i++) {
 			let tagType = awakeTags[i].getAttribute("type");
 			if(tagType){
@@ -243,8 +240,6 @@ function initShoptype(){
 				awakeTags[i].remove;
 			}
 		}
-		getAllVendors();
-		setCountry();
 		if(stToken && stToken!=""){
 			getUserDetails();
 		}
@@ -254,25 +249,30 @@ function initShoptype(){
 function sendUserEvent(){
 	let tid = currentUrl.searchParams.get("tid");
 	if(!tid){return}
-	getDeviceId()
-		.then(deviceId =>{
-			let payload = {
-				"device_id": deviceId,
-				"url": window.location.href,
-				"tracker_id": tid,
-				"referrer": window.location.host
-			}
-			let headerOptions = {
-				method:'post',
-				'headers': {'content-type': 'application/json'},
-				body: JSON.stringify(payload)
-			};
-			fetch(st_backend + "/track/user-event", headerOptions)
-				.then(response=>response.json())
-				.then(eventJson=>{
-					console.info(eventJson);
-				});
-		});
+	if(st_loadedJs.indexOf("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js")<0){
+		st_loadedJs.push("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js");
+		st_loadScript("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js", sendUserEvent);
+	}else{
+		getDeviceId()
+			.then(deviceId =>{
+				let payload = {
+					"device_id": deviceId,
+					"url": window.location.href,
+					"tracker_id": tid,
+					"referrer": window.location.host
+				}
+				let headerOptions = {
+					method:'post',
+					'headers': {'content-type': 'application/json'},
+					body: JSON.stringify(payload)
+				};
+				fetch(st_backend + "/track/user-event", headerOptions)
+					.then(response=>response.json())
+					.then(eventJson=>{
+						console.info(eventJson);
+					});
+			});
+	}
 }
 let st_loaderMask = `<div id="st-loader-mask" style="display:none" class="st-loader-mask"><div class="st-loader"></div></div>`;
 let cosellMask = `<div id="st-cosell-mask" style="display:none" class="st-cosell-link-mask" onclick="hideElement(this)"><div class="st-cosell-links" onclick="event.stopPropagation()"><div class="st-cosell-links-header">Here’s your unique Cosell link!</div><div class="st-cosell-body"><div class="st-cosell-links-image"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/Share-Link.png" loading="lazy" alt=""></div><div class="st-cosell-social-links"><div class="st-cosell-social-title">Share it on Social Media</div><div class="st-cosell-socialshare"> <a id="st-fb-link" href="#" class="st-cosell-socialshare-link w-inline-block"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/facebook.png" loading="lazy" alt=""></a> <a id="st-twitter-link" href="#" class="st-cosell-socialshare-link w-inline-block"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/twitter.png" loading="lazy" alt=""></a> <a id="st-whatsapp-link" href="#" class="st-cosell-socialshare-link w-inline-block"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/whatsapp.png" loading="lazy" alt=""></a> <a id="st-pinterest-link" href="#" class="st-cosell-socialshare-link w-inline-block"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/instagram.png" loading="lazy" alt=""></a> <a id="st-linkedin-link" href="#" class="st-cosell-socialshare-link w-inline-block"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/linkedin.png" loading="lazy" alt=""></a></div></div><div class="st-cosell-links-txt">or</div><div class="st-cosell-sharelink"><div class="st-cosell-sharelink-div"><div class="st-cosell-sharelink-url"><div class="st-cosell-link-copy-btn" onclick="stCopyCosellUrl('st-cosell-url-input')">🔗 Copy to Clipboard</div> <input type="text" id="st-cosell-url-input" class="st-cosell-sharelink-url-txt"></input></div></div><div id="st-cosell-sharewidget" class="st-cosell-sharelink-div"><div class="st-cosell-share-widget-txt">Share on Blogs</div><div id="st-widget-btn" class="st-cosell-share-widget-btn">Get an Embed</div></div></div></div><div class="st-cosell-links-footer"><div class="st-cosell-footer-shoptype">Powered by <a href="https://www.shoptype.com" target="_blank" class="st-cosell-footer-shoptype-link">Shoptype</a></div> <a href="#" target="_blank" class="w-inline-block"><div class="st-cosell-page-txt">Learn more about Coselling</div> </a></div></div></div>`;
@@ -700,6 +700,10 @@ function moveToCart(){
 	document.getElementById("st-cart-next-btn").innerHTML = "Proceed to Delivery";
 	document.getElementById("st-cart-payment").style.display = "none";
 	document.getElementById("st-all-carts-shipping").innerHTML = "Address Required";
+	if(st_loadedJs.indexOf("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js")<0){
+		st_loadedJs.push("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js");
+		st_loadScript("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js", sendUserEvent);
+	}
 }
 function moveToDelivery(){
 	state = 1;
@@ -745,6 +749,10 @@ function moveToDelivery(){
 				}else{
 					cartMainFrame.style.display = "";
 					cartMainFrame.style.right= "0px";
+					setCountry();
+					st_loadScript("https://shoptype-scripts.s3.amazonaws.com/payment_js/st-payment-handlers-bundle.js");
+					st_loadScript("https://js.stripe.com/v3/");
+					st_loadScript("https://checkout.razorpay.com/v1/checkout.js");
 					stHideLoader();
 					document.getElementById("st-cart-list").style.display = "none";
 					document.getElementById("st-cart-deliver").style.display = "flex";
