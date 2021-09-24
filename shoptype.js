@@ -136,16 +136,22 @@ const cartUrl = "https://app.shoptype.com/cart";
 const st_defaultCurrency = "USD";
 const st_loadedJs = [];
 let st_refUrl = null;
-let currentPageProductId = null;
-let stToken = currentUrl.searchParams.get("token");
-let stCheckoutType = "same";
-let carts = {};
-let stProducts = {}
-let callStack={};
-let state = 0;
-let selectedCartId = null;
-let checkout = null;
-let headerOptions = {
+		currentPageProductId = null,
+		stToken = currentUrl.searchParams.get("token"),
+		stCheckoutType = "same",
+		carts = {},
+		stProducts = {},
+		callStack={},
+		state = 0,
+		selectedCartId = null,
+		checkout = null,
+		cartMainFrame = null,
+		vendorId = null,
+		st_platformId = null,
+		st_hostDomain = null,
+		st_cartCountMatch = null,
+		st_refCode = null,
+		headerOptions = {
 			method:'',
 			'headers': {
 				'Content-Type': 'application/json',
@@ -154,11 +160,6 @@ let headerOptions = {
 			body: null
 		};
 
-let cartMainFrame = null;
-let vendorId = null;
-let st_hostDomain = null;
-let st_cartCountMatch = null;
-let st_refCode = null;
 DomReady.ready(function() { initShoptype(); });
 
 if(stToken && stToken!=""){
@@ -189,6 +190,7 @@ function initShoptype(){
 
 	if(awakeSetup.length>0){
 		vendorId= awakeSetup[0].getAttribute("vendorid");
+		st_platformId= awakeSetup[0].getAttribute("platformid");
 		let apiKey = awakeSetup[0].getAttribute("apikey");
 		let overrideCss = awakeSetup[0].getAttribute("css");
 		st_cartCountMatch = awakeSetup[0].getAttribute("cartcountmatch");
@@ -663,7 +665,7 @@ function openCart(){
 }
 function closeCart(){
 	checkout = null;
-	cartMainFrame.style.right= "-400px";
+	cartMainFrame.style.right= "-"+cartMainFrame.offsetWidth+"px";
 }
 function changeState(stateProg){
 	state+=stateProg;
@@ -716,6 +718,7 @@ function moveToDelivery(){
 			"cartId": selectedCartId
 		}
 		headerOptions.body = JSON.stringify(data);
+		headerOptions.headers['X-Shoptype-PlatformId']=st_platformId;
 		fetch(st_backend + "/checkout", headerOptions)
 			.then(response => response.json())
 			.then(checkoutJson => {
