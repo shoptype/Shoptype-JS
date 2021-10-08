@@ -886,12 +886,24 @@ function paymentComplete(payload){
 		showError(payload.message);
 		break;
 	case "closed":
-		cartMainFrame.style.right= "0px";
+		if(selectedCartId){
+			cartMainFrame.style.right= "0px";
+		}
 		break;
 	case "success":
+		deleteCart(selectedCartId);
+		selectedCartId = null;
 		closeCart();
 		break;
 	}
+}
+function deleteCart(cartId){
+	headerOptions.method = "delete";
+	headerOptions.body = shippingBody;
+	fetch(st_backend + `/checkout/${checkout.id}/shipping-method`, headerOptions)
+		.then(response => {
+			console.info("Cart Deleted: " + response.status);
+		});
 }
 function stBuyNow(button){
 	stShowLoader();
