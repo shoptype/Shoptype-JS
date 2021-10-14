@@ -899,8 +899,8 @@ function paymentComplete(payload){
 }
 function deleteCart(cartId){
 	headerOptions.method = "delete";
-	headerOptions.body = shippingBody;
-	fetch(st_backend + `/checkout/${checkout.id}/shipping-method`, headerOptions)
+	headerOptions.body = null;
+	fetch(st_backend + `/cart/${cartId}/`, headerOptions)
 		.then(response => {
 			console.info("Cart Deleted: " + response.status);
 		});
