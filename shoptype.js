@@ -214,7 +214,6 @@ function initShoptype(){
 		cartMainFrame = document.getElementById("st-cart-iframe-block");
 		headerOptions.headers["X-Shoptype-Api-Key"] = apiKey;
 		setupCart();
-		getAllVendors();
 		document.dispatchEvent(stShoptypeInit);
 		for (var i = 0; i < awakeTags.length; i++) {
 			let tagType = awakeTags[i].getAttribute("type");
@@ -524,7 +523,6 @@ function setupShare(product){
 			let description = product.description?product.description.substr(0,250):"";
 			document.getElementById("st-linkedin-link").href = "https://www.linkedin.com/shareArticle?mini=true&source=LinkedIn&url=" + encodedUrl + "&title=" + product.title + "&summary=" + description;
 			document.getElementById("st-cosell-url-input").value = refUrl;
-			//document.getElementById("widget-link").href = "/cosell?id=" + product.id;
 		});
 }
 
@@ -600,7 +598,6 @@ function stCopyCosellUrl(elementID) {
 	copyText.setSelectionRange(0, 99999); 
 	document.execCommand("copy");
 }
-
 function loadCSS(cssUrl){
 	let cssId = btoa(cssUrl);
 	if (!document.getElementById(cssId))
@@ -615,7 +612,6 @@ function loadCSS(cssUrl){
 		head.appendChild(link);
 	}
 }
-
 function showLogin(){
 	let tid = currentUrl.searchParams.get("tid");
 
@@ -685,13 +681,6 @@ function changeState(stateProg){
 		moveToPay();
 		break;
 	}
-}
-function getAllVendors(){
-	fetch(st_backend + "/vendors")
-		.then(response => response.json())
-		.then(vendorsJson => {
-			allVendors = vendorsJson.vendors;
-		});
 }
 function moveToCart(){
 	state = 0;
@@ -897,6 +886,7 @@ function paymentComplete(payload){
 		break;
 	}
 }
+
 function deleteCart(cartId){
 	headerOptions.method = "delete";
 	headerOptions.body = null;
@@ -1103,23 +1093,20 @@ function setupCart(){
 		}
 	}
 }
-function isShoptypeCheckout(vendorId){
-	for (var i = 0; i < allVendors.length; i++) {
-		if(allVendors[i].id == vendorId) {return allVendors[i].enableCheckoutShoptype??false;}
-	}
-}
 function addProduct(vendorId, productId, varientId, quantity){
 	let currentCartId = null;
-	let cVendorId = isShoptypeCheckout(vendorId)?"shoptypeCart":vendorId;
-	if(carts[cVendorId]){
-		currentCartId = carts[cVendorId];
-	}else if(carts["newCart"]){
-		currentCartId = carts["newCart"];
-	}else{
-		createCartAddProduct(cVendorId, productId, varientId, quantity);
-		return;
-	}
-	addProductToCart(currentCartId, productId, varientId, quantity);
+	stCallWithProduct(productId, function(productJson){
+		let cVendorId = productJson.vendor.enableCheckoutShoptype?"shoptypeCart":vendorId;
+		if(carts[cVendorId]){
+			currentCartId = carts[cVendorId];
+		}else if(carts["newCart"]){
+			currentCartId = carts["newCart"];
+		}else{
+			createCartAddProduct(cVendorId, productId, varientId, quantity);
+			return;
+		}
+		addProductToCart(currentCartId, productId, varientId, quantity);
+	});
 }
 function updateCart(cartId){
 	let cartNode = document.getElementById(cartId);
