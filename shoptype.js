@@ -182,6 +182,7 @@ function st_loadScript(url, callback) {
 	script.onreadystatechange = callback;
 	script.onload = callback;
 	head.appendChild(script);
+	st_loadedJs.push(url);
 }
 
 function initShoptype(){
@@ -251,8 +252,7 @@ function initShoptype(){
 function sendUserEvent(){
 	let tid = currentUrl.searchParams.get("tid");
 	if(!tid){return}
-	if(st_loadedJs.indexOf("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js")<0){
-		st_loadedJs.push("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js");
+	if(typeof fingerprintExcludeOptions!== 'undefined'){
 		st_loadScript("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js", sendUserEvent);
 	}else{
 		getDeviceId()
@@ -702,8 +702,7 @@ function moveToCart(){
 	document.getElementById("st-cart-next-btn").innerHTML = "Proceed to Delivery";
 	document.getElementById("st-cart-payment").style.display = "none";
 	document.getElementById("st-all-carts-shipping").innerHTML = "Address Required";
-	if(st_loadedJs.indexOf("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js")<0){
-		st_loadedJs.push("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js");
+	if(typeof fingerprintExcludeOptions!== 'undefined'){
 		st_loadScript("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js", sendUserEvent);
 	}
 }
