@@ -210,12 +210,11 @@ function initShoptype(){
 								st_coseller_profile.replace("{site}", currentUrl.hostname) +
 								cosellMask+
 								st_cosell_screen.replace("{{site}}", currentUrl.host)+
-								st_loader;		
+								st_loader+st_checkout_done;		
 		body.insertBefore(cartWraper, body.firstChild);
 		cartMainFrame = document.getElementById("st-cart-iframe-block");
 		headerOptions.headers["X-Shoptype-Api-Key"] = apiKey;
 		setupCart();
-		getAllVendors();
 		document.dispatchEvent(stShoptypeInit);
 		for (var i = 0; i < awakeTags.length; i++) {
 			let tagType = awakeTags[i].getAttribute("type");
@@ -288,6 +287,7 @@ let st_cosell_screen = `<div class="st-cosell-link-mask" id="st-cosell-intro-mas
 let st_coseller_profile = `<div class="st-cosell-link-mask" id="coseller-profile-mask" style="display:none" onclick="hideElement(this)"><div class="st-cosell-links" onclick="event.stopPropagation()"><div class="st-redirect"><div class="st-redirect-txt">To view earnings across all market networks, please visit:</div><div class="st-redirect-btn-div"> <a href="https://app.shoptype.com/" target="_blank" class="st-redirect-btn w-inline-block"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/Shoptype-Logo-White.png" loading="lazy" alt="" class="st-redirect-btn-image"><div class="st-redirect-btn-title">Visit Shoptype</div> </a><div class="st-redirect-btn-txt">(Redirects to Shoptype. Opens in new tab)</div></div></div><div class="st-coseller-db"><div class="st-coseller-db-title-div"><h1 id="st-coseller-db-heading" class="st-coseller-db-heading">Your Dashboard {site}</h1></div><div class="st-coseller-db-data"><div class="st-duration-selectors" style="display:none;"><div id="st-duration-select-all" class="st-duration-select st-btn-select">All Time</div><div id="st-duration-select-month" class="st-duration-select">This Month</div><div id="st-duration-select-week" class="st-duration-select">This Week</div><div id="st-duration-select-day" class="st-duration-select">Today</div></div><div class="st-coseller-kpi-div"><div class="div-block-137"><div class="st-coseller-kpi"><div class="st-coseller-kpi-txt">Total Earnings</div><div id="st-coseller-kpi-val-tot-earning" class="st-coseller-kpi-val">000</div></div><div class="st-coseller-kpi"><div class="st-coseller-kpi-txt">Clicks</div><div id="st-coseller-kpi-val-tot-click" class="st-coseller-kpi-val">000</div></div><div class="st-coseller-kpi"><div class="st-coseller-kpi-txt">Publishes</div><div id="st-coseller-kpi-val-tot-publish" class="st-coseller-kpi-val">000</div></div><div class="st-coseller-kpi"><div class="st-coseller-kpi-txt">Currency</div><div id="st-coseller-kpi-val-currency" class="st-coseller-kpi-val">USD</div></div></div><div class="st-coseller-kpi-products"><div><h3 class="st-coseller-products-title">Products Published</h3></div><div class="st-coseller-products-list" id="st-coseller-products-list"><div class="st-coseller-product" id="st-coseller-product-000" style="display: none;"><div class="st-coseller-product-div"><div class="st-coseller-product-details"><div class="st-coseller-product-img-div"><img src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" loading="lazy" alt="" class="st-coseller-product-img"></div><div class="st-coseller-product-desc"><div class="st-coseller-product-name">Product Name</div><div class="st-coseller-product-vendor">Vendor Name</div></div></div><div class="st-coseller-product-kpi"><div class="st-coseller-kpi-txt">Total Earnings</div><div class="st-coseller-kpi-val st-product-tot-earnings">$ 000</div></div></div><div class="div-block-146"><div class="st-coseller-product-kpi"><div class="st-coseller-kpi-txt">Product Price</div><div class="st-coseller-kpi-val">00</div></div><div class="st-coseller-product-kpi"><div class="st-coseller-kpi-txt">Clicks</div><div class="st-coseller-kpi-val">00</div></div><div class="st-coseller-product-kpi"><div class="st-coseller-kpi-txt">Publishes</div><div class="st-coseller-kpi-val">00</div></div><div class="st-coseller-product-kpi"><div class="st-coseller-nudge-btn">Cosell</div></div></div></div></div></div></div></div></div></div></div>`;
 let st_profile_btn = `<div class="st-coseller-profile"><div class="st-coseller-profile-btn" onclick="stToggleElement('#st-coseller-profile-menu')"></div><div id="st-coseller-profile-menu" class="st-coseller-profile-menu" style="display:none;"><div class="st-profile-menu-item" onclick="stShowCosellerDashboard()">Profile</div><div class="st-profile-menu-item" onclick="stShowCosellerDashboard()">Coseller Dashboard</div><div class="st-profile-menu-item" id="menu-signout-btn" onclick="showLogin()">Sign in</div></div></div>`;
 let st_loader = '<div class="st-loader-mask" id="st-loader-mask" style="display:none;"><img src="https://in.awake.market/wp-content/themes/marketo/assets/images/loader.gif" alt="" style="max-width: 20%;"></div>';
+let st_checkout_done = `<div class="st-cosell-link-mask" id="st-checkout-success" style="display:none" onclick="hideCheckoutMessage()"><div class="st-checkout-done"><h3 class="st-checkout-done-heading">Checkout Success!</h3><img src="https://firebasestorage.googleapis.com/v0/b/pinkim.appspot.com/o/Party-Emoji.png?alt=media" loading="lazy" alt="" class="st-checkout-done-img"><div class="st-checkout-done-text">Thank you for shopping with us!You’ll be notified about your order in your notification inbox, as well as your registered email.</div></div></div>`;
 
 function setupCosellBtn(awakeTag){
 	const wraperDiv = document.createElement("div");
@@ -524,7 +524,6 @@ function setupShare(product){
 			let description = product.description?product.description.substr(0,250):"";
 			document.getElementById("st-linkedin-link").href = "https://www.linkedin.com/shareArticle?mini=true&source=LinkedIn&url=" + encodedUrl + "&title=" + product.title + "&summary=" + description;
 			document.getElementById("st-cosell-url-input").value = refUrl;
-			//document.getElementById("widget-link").href = "/cosell?id=" + product.id;
 		});
 }
 
@@ -600,7 +599,6 @@ function stCopyCosellUrl(elementID) {
 	copyText.setSelectionRange(0, 99999); 
 	document.execCommand("copy");
 }
-
 function loadCSS(cssUrl){
 	let cssId = btoa(cssUrl);
 	if (!document.getElementById(cssId))
@@ -615,7 +613,6 @@ function loadCSS(cssUrl){
 		head.appendChild(link);
 	}
 }
-
 function showLogin(){
 	let tid = currentUrl.searchParams.get("tid");
 
@@ -685,13 +682,6 @@ function changeState(stateProg){
 		moveToPay();
 		break;
 	}
-}
-function getAllVendors(){
-	fetch(st_backend + "/vendors")
-		.then(response => response.json())
-		.then(vendorsJson => {
-			allVendors = vendorsJson.vendors;
-		});
 }
 function moveToCart(){
 	state = 0;
@@ -892,9 +882,17 @@ function paymentComplete(payload){
 	case "success":
 		deleteCart(selectedCartId);
 		selectedCartId = null;
+		showCheckoutSuccess();
 		closeCart();
 		break;
 	}
+}
+function showCheckoutSuccess(){
+	document.getElementById('st-checkout-success').style.display = "";
+	setTimeout(hideCheckoutMessage, 5000);
+}
+function hideCheckoutMessage(){
+	document.getElementById('st-checkout-success').style.display = "";
 }
 function deleteCart(cartId){
 	headerOptions.method = "delete";
@@ -1102,23 +1100,20 @@ function setupCart(){
 		}
 	}
 }
-function isShoptypeCheckout(vendorId){
-	for (var i = 0; i < allVendors.length; i++) {
-		if(allVendors[i].id == vendorId) {return allVendors[i].enableCheckoutShoptype??false;}
-	}
-}
 function addProduct(vendorId, productId, varientId, quantity){
 	let currentCartId = null;
-	let cVendorId = isShoptypeCheckout(vendorId)?"shoptypeCart":vendorId;
-	if(carts[cVendorId]){
-		currentCartId = carts[cVendorId];
-	}else if(carts["newCart"]){
-		currentCartId = carts["newCart"];
-	}else{
-		createCartAddProduct(cVendorId, productId, varientId, quantity);
-		return;
-	}
-	addProductToCart(currentCartId, productId, varientId, quantity);
+	stCallWithProduct(productId, function(productJson){
+		let cVendorId = productJson.vendor.enableCheckoutShoptype?"shoptypeCart":vendorId;
+		if(carts[cVendorId]){
+			currentCartId = carts[cVendorId];
+		}else if(carts["newCart"]){
+			currentCartId = carts["newCart"];
+		}else{
+			createCartAddProduct(cVendorId, productId, varientId, quantity);
+			return;
+		}
+		addProductToCart(currentCartId, productId, varientId, quantity);
+	});
 }
 function updateCart(cartId){
 	let cartNode = document.getElementById(cartId);
