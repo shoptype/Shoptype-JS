@@ -577,10 +577,11 @@ function stCacheProduct(productJson){
 }
 
 function shoptypeLogout(){
-	document.getElementById("st-coseller-profile-menu").style.display="none";
 	setCookie("stToken",null,0);
 	sessionStorage.clear();
 	location.reload();
+	let cosellerMenu = document.getElementById("st-coseller-profile-menu");
+	if(cosellerMenu){cosellerMenu.style.display="none";}
 }
 
 function showCosell(productId){
