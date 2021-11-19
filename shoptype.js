@@ -170,8 +170,11 @@ if(stToken && stToken!=""){
 }
 
 document.addEventListener("userLogin", function (e) {
-  document.getElementById("menu-signout-btn").innerHTML = "Sign out";
-  document.getElementById("menu-signout-btn").setAttribute("onclick","shoptypeLogout()")
+	let userMenu = document.getElementById("menu-signout-btn");
+	if(userMenu)
+	  userMenu.innerHTML = "Sign out";
+	  userMenu.setAttribute("onclick","shoptypeLogout()")
+	}
 });
 
 function st_loadScript(url, callback) {
