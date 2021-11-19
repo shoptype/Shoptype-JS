@@ -171,7 +171,7 @@ if(stToken && stToken!=""){
 
 document.addEventListener("userLogin", function (e) {
 	let userMenu = document.getElementById("menu-signout-btn");
-	if(userMenu)
+	if(userMenu){
 	  userMenu.innerHTML = "Sign out";
 	  userMenu.setAttribute("onclick","shoptypeLogout()")
 	}
