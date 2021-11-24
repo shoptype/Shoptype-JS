@@ -438,16 +438,25 @@
 .st-cart-input-field {
   height: 30px;
   max-width: 92%;
-  margin: 0px 4%;
+  margin: 5px 4%;
   padding: 8px 0px 0px;
   font-size: 16px;
-  -webkit-box-flex: 0;
-  -webkit-flex: 0;
-  -ms-flex: 0;
-  flex: 0;
+  -webkit-box-flex: 0 0 100%;
+  -webkit-flex: 0 0 100%;
+  -ms-flex: 0 0 100%;
+  flex: 0 0 100%;
   border-style: none none solid;
   border-width: 1px;
   border-color: #000 #000 #6d6b5d;
+}
+
+.cart-input-half {
+  flex: 0 0 calc(50% - 5px);
+  width: calc(50% - 5px);
+}
+
+.cart-input-alt{
+  margin-right: 5px;
 }
 
 .st-cart-store-name {
@@ -670,9 +679,9 @@
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
 }
 
 .st-cart-items-total {
