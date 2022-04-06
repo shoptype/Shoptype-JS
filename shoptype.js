@@ -458,7 +458,7 @@ function getProductUrl(tag,callback){
 	}
 }
 
-function addToCart(button){
+function addToCart(button, open = true){
 	stShowLoader();
 	let variantId = button.getAttribute("variantid");
 	let productId = button.getAttribute("productid");
@@ -480,7 +480,7 @@ function addToCart(button){
 		return;
 	}
 	addProduct(thisVendorId, productId, variantId, quantity)
-	openCart();
+	if(open){openCart();}
 	return false;
 }
 
