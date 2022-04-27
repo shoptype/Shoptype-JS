@@ -135,6 +135,7 @@ const stLoadedProducts = {};
 const cartUrl = "https://app.shoptype.com/cart";
 const st_defaultCurrency = "USD";
 const st_loadedJs = [];
+let st_loginUrl = null;
 let st_refUrl = null;
 		currentPageProductId = null,
 		stToken = currentUrl.searchParams.get("token"),
@@ -202,6 +203,7 @@ function initShoptype(){
 		st_hostDomain = awakeSetup[0].getAttribute("hostdomain");
 		stCheckoutType = awakeSetup[0].getAttribute("checkoutin")??"same";
 		st_refUrl = awakeSetup[0].getAttribute("refurl")??null;
+		st_loginUrl = awakeSetup[0].getAttribute("loginUrl")??'https://login.shoptype.com/signup';
 		if(overrideCss){
 			loadCSS(overrideCss);
 		}else{
@@ -623,7 +625,7 @@ function showLogin(){
 	if(stToken && stToken!=""){
 		getUserDetails();
 	}else{
-		let loginUrl = 'https://login.shoptype.com/signup?redirectUrl=' + encodeURIComponent(window.location.href);
+		let loginUrl = st_loginUrl + '?redirectUrl=' + encodeURIComponent(window.location.href);
 		if(tid){
 			loginUrl += "&tid=" + tid;
 		}else{
