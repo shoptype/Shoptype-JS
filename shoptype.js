@@ -781,8 +781,7 @@ function moveToPayments(){
 		"city": document.getElementById("st-city").value,
 		"country": countrySelect.options[countrySelect.selectedIndex].text,
 		"countryCode": countrySelect.value,
-		"state": stateSelect.options[stateSelect.selectedIndex].text,
-		"stateCode": stateSelect.value,
+		"state": stateSelect.value,
 		"postalCode": document.getElementById("st-pincode").value
 		},
 		"is_shipping_billing": true
@@ -1254,15 +1253,14 @@ function setCountry(){
 			fetch(st_backend + "/states/" + countryField.value)
 				.then(response => response.json())
 				.then(countriesJson => {
-					let stateField = document.getElementById("st-state");
+					let stateField = document.getElementById("st-states-list");
 					for (var i = stateField.options.length-1; i > 0; i--) {
 						stateField.options[i] = null;
 					}
 					for (var i = 0; i < countriesJson.data.length; i++) {
 						var option = document.createElement("option");
 						option.text = countriesJson.data[i].name;
-						option.value = countriesJson.data[i].state_code;
-						stateField.add(option);
+						stateField.appendChild(option);
 					}
 				});
 		});
