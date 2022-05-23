@@ -473,8 +473,8 @@
   padding-right: 20px;
   padding-left: 20px;
   border-radius: 20px;
-  background-color: var(--primary-color-selected);
-  color: var(--primary-color-selected-comp);
+  background-color: var(--button-color);
+  color: var(--button-text-color);
   font-size: 16px;
   line-height: 30px;
   text-align: center;
@@ -1137,10 +1137,10 @@
 
 .st-cosell-sugnup-btn {
   padding: 10px 20px;
-  border: 1px solid var(--primary-color-comp);
+  border: 1px solid var(--button-text-color);
   border-radius: 5px;
-  background-color: var(--primary-color);
-  color: var(--primary-color-comp);
+  background-color: var(--button-color);
+  color: var(--button-text-color);
   font-size: 18px;
   line-height: 30px;
   font-weight: 700;
@@ -1270,8 +1270,8 @@
   -ms-flex: 0 50%;
   flex: 0 50%;
   border-radius: 5px;
-  background-color: var(--primary-color);
-  color: var(--primary-color-comp);
+  background-color: var(--button-color);
+  color: var(--button-text-color);
   line-height: 30px;
   text-align: center;
   cursor: pointer;
@@ -1655,8 +1655,8 @@
   -ms-flex: 1;
   flex: 1;
   border-radius: 5px;
-  background-color: var(--primary-color);
-  color: var(--primary-color-comp);
+  background-color: var(--button-color);
+  color: var(--button-text-color);
   font-size: 16px;
   font-weight: 700;
   text-align: center;
