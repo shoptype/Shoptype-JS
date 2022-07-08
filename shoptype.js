@@ -508,7 +508,7 @@ function setupShare(product){
 	headerOptions.method ='get';
 	headerOptions.headers.Authorization = sessionStorage["token"];
 	document.getElementById("st-cosell-sharewidget").style.display="none";
-	fetch( st_backend+"/track/publish-slug?productId=" + product.id, headerOptions)
+	fetch( st_backend+`/track/publish-slug?productId=${product.id}&platformId=${st_platformId}`, headerOptions)
 		.then(response => response.json())
 		.then(trackerJson=>{
 			let sharetxt = "Hey found this really interesting product you may be iterested in ";
