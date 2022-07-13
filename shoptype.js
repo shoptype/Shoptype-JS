@@ -257,7 +257,7 @@ function sendUserEvent(){
 	let tid = currentUrl.searchParams.get("tid");
 	if(!tid){return}
 	if(typeof fingerprintExcludeOptions=== 'undefined'){
-		st_loadScript("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js", sendUserEvent);
+		st_loadScript("https://cdn.jsdelivr.net/gh/shoptype/Shoptype-JS@main/stOccur.js", sendUserEvent);
 	}else{
 		getDeviceId()
 			.then(deviceId =>{
@@ -699,7 +699,7 @@ function moveToCart(){
 	document.getElementById("st-cart-payment").style.display = "none";
 	document.getElementById("st-all-carts-shipping").innerHTML = "Address Required";
 	if(typeof fingerprintExcludeOptions=== 'undefined'){
-		st_loadScript("https://shoptype-scripts.s3.amazonaws.com/triggerUserEvent.js", sendUserEvent);
+		st_loadScript("https://cdn.jsdelivr.net/gh/shoptype/Shoptype-JS@main/stOccur.js", sendUserEvent);
 	}
 }
 function moveToDelivery(){
