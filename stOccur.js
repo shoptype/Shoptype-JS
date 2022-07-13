@@ -76,7 +76,7 @@ function getDeviceId() {
     });
 }
 
-loadScript("https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.js", setDeviceId);
+loadScript("https://cdn.jsdelivr.net/gh/shoptype/Shoptype-JS@main/pegasus.js", setDeviceId);
 
 function triggerUserEvent(
     productId,
