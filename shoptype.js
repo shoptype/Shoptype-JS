@@ -463,8 +463,10 @@ function getProductUrl(tag,callback){
 function addToCart(button,open = true){
 	stShowLoader();
 	let variantId = button.getAttribute("variantid");
+	let variantName = JSON.parse(button.getAttribute("variantName"));
 	let productId = button.getAttribute("productid");
 	let thisVendorId = button.getAttribute("vendorid");
+
 	let quantity = 1;
 	let quantSelect = button.getAttribute("quantitySelect");
 	
@@ -481,7 +483,7 @@ function addToCart(button,open = true){
 	if(quantity==0){
 		return;
 	}
-	addProduct(thisVendorId, productId, variantId, quantity)
+	addProduct(thisVendorId, productId, variantId, variantName, quantity)
 	if(open){openCart();}
 	return false;
 }
@@ -911,6 +913,7 @@ function deleteCart(cartId){
 function stBuyNow(button){
 	stShowLoader();
 	let variantId = button.getAttribute("variantid");
+	let variantName = JSON.parse(button.getAttribute("variantName"));
 	let productId = button.getAttribute("productid");
 	let quantity = 1;
 	let quantSelect = button.getAttribute("quantitySelect");
@@ -921,7 +924,7 @@ function stBuyNow(button){
 		stHideLoader();
 		return;
 	}
-	createCartAddProduct("BuyNow", productId, variantId, quantity, buyNowCheckout);
+	createCartAddProduct("BuyNow", productId, variantId, variantName, quantity, buyNowCheckout);
 }
 function buyNowCheckout(newCheckoutId){
 	selectedCartId = newCheckoutId;
@@ -1106,7 +1109,7 @@ function setupCart(){
 		}
 	}
 }
-function addProduct(vendorId, productId, varientId, quantity){
+function addProduct(vendorId, productId, varientId, variantName, quantity){
 	let currentCartId = null;
 	stCallWithProduct(productId, function(productJson){
 		let cVendorId = productJson.vendor.enableCheckoutShoptype?"shoptypeCart":vendorId;
@@ -1115,10 +1118,10 @@ function addProduct(vendorId, productId, varientId, quantity){
 		}else if(carts["newCart"]){
 			currentCartId = carts["newCart"];
 		}else{
-			createCartAddProduct(cVendorId, productId, varientId, quantity);
+			createCartAddProduct(cVendorId, productId, varientId, variantName, quantity);
 			return;
 		}
-		addProductToCart(currentCartId, productId, varientId, quantity);
+		addProductToCart(currentCartId, productId, varientId, variantName, quantity);
 	});
 }
 function updateCart(cartId){
@@ -1129,10 +1132,11 @@ function updateCart(cartId){
 		addCart(cartId);
 	}
 }
-function addProductToCart(cartId, productId, varientId, quantity, callback){
+function addProductToCart(cartId, productId, varientId, variantName, quantity, callback){
 	let payload = {
 			"product_id": productId,
 			"product_variant_id": varientId,
+			"variant_name_value": variantName,
 			"quantity": quantity
 		};
 	headerOptions.method = 'post';
@@ -1228,7 +1232,7 @@ function displayCosellerDetails(token){
 		});
 }
 
-function createCartAddProduct(vendorId, productId, varientId, quantity, callback){
+function createCartAddProduct(vendorId, productId, varientId, variantName, quantity, callback){
 	headerOptions.method = "post";
 	headerOptions.body = "{}";
 	fetch(st_backend + "/cart",headerOptions)
@@ -1236,7 +1240,7 @@ function createCartAddProduct(vendorId, productId, varientId, quantity, callback
 		.then(cartJson => {
 			carts[vendorId] = cartJson.id;
 			setCookie("carts", JSON.stringify(carts),100)
-			addProductToCart(cartJson.id, productId, varientId, quantity, callback);
+			addProductToCart(cartJson.id, productId, varientId, variantName, quantity, callback);
 		});
 }
 function setCountry(){
