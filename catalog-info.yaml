@@ -3,7 +3,8 @@ kind: Component
 metadata:
   name: Shoptype-JS
   annotations:
-    github.com/project-slug: shoptype/Shoptype-JS
+    #github.com/project-slug: shoptype/Shoptype-JS
+    backstage.io/techdocs-ref: dir:.
 spec:
   type: other
   lifecycle: unknown
