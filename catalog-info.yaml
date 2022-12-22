@@ -5,7 +5,7 @@ metadata:
   annotations:
     #github.com/project-slug: shoptype/Shoptype-JS
     #backstage.io/techdocs-ref: dir:.
-    backstage.io/source-location: url:https://github.com/shoptype/Shoptype-JS/
+    backstage.io/managed-by-origin-location: url:https://github.com/shoptype/Shoptype-JS/blob/main/docs/index.md
 spec:
   type: other
   lifecycle: unknown
